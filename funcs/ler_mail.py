@@ -1,75 +1,47 @@
-import email
-import imaplib
 from imap_tools import MailBox, AND
+import pandas as pd
 
 
 
-def download_atr_status():
-
-    user = 'backofficei9br@gmail.com'
-    password = 'i9br12345'
-    server = 'smtp.gmail.com'
-    pasta = 'primary'
-
-
-    def connect(server, user, password):
-        m = imaplib.IMAP4_SSL(server)
-        m.login(user, password)
-        #print(m)
-        return m
-
-    def downloaAttachmentsInEmail(m, emailid, pasta):
-        resp, data = m.fetch(emailid, "(BODY.PEEK[])")
-        email_body = data[0][1]
-        mail = email.message_from_bytes(email_body)
-        dados2 = mail.values()
-
-
-
-        if dados2[17] == 'CribMonitor':
-            for part in mail.walk():
-                if part.get_content_maintype() != 'multipart' and part.get_all('Content-Disposition') is not None:
-                    open(pasta + '\\' + 'atr_status' + '.csv', 'wb').write(part.get_payload(decode=True))
-
-
-    def downloadAllAttachmentsInInbox(server, user, password, pasta):
-        m = connect(server, user, password)
-        resp, items = m.search(None, "(ALL)")
-        print(resp, items)
-        items = items[0].split()
-        for emailid in items:
-            idmail = f"b'{len(items)}'"
-            if str(emailid) == idmail:
-                downloaAttachmentsInEmail(m, emailid, pasta)
-
-
-    #try:
-    downloadAllAttachmentsInInbox(server, user, password, pasta)
-
-    #except:
-        #print('Não foi possivel baixar o relatorio, utilizaremos o relatorio antigo.')
-
-def download_gmail():
-    # pegar emails de um remetente para um destinatário
+def acess_mail():
+    '''loga na conta e traz todos os emails que não foram visualizados'''
     username = 'backofficei9br@gmail.com'
     password = 'i9br12345'
-
-    # lista de imaps: https://www.systoolsgroup.com/imap/
     meu_email = MailBox('imap.gmail.com').login(username, password)
+    lista_emails = meu_email.fetch(AND(seen=False))
+    return lista_emails
 
-    # criterios: https://github.com/ikvk/imap_tools#search-criteria
-    lista_emails = meu_email.fetch(AND(from_="remetente", to="destinatario"))
-    for email in lista_emails:
-        print(email.subject)
-        print(email.text)
+def trata_mail(email):
+    list_subject = ['cadastro de funcionarios', 'cadastro de funcionarios', 'cadastro de item', 'cadastro de itens']
+    email_data = {}
+    dict_anexos = {}
+    print(email.subject)
+    if len(email.attachments) > 0 and email.subject in list_subject:
+        for contagem_anex, anexo in enumerate(email.attachments):
+            email_data['data'] = email.date_str
+            email_data['from'] = [email.from_values.name, email.from_values.email]
+            df = pd.read_excel(anexo.payload)
+            dict_anexos[contagem_anex] = df
+            contagem_anex += 1
+        email_data['anexos'] = dict_anexos
+    else:
+        print('enviar email falando o objetivo do sistema.')
+    return email_data
 
-    # pegar emails com um anexo específico
-    lista_emails = meu_email.fetch(AND(from_="remetente"))
-    for email in lista_emails:
-        if len(email.attachments) > 0:
-            for anexo in email.attachments:
-                if "TituloAnexo" in anexo.filename:
-                    print(anexo.content_type)
-                    print(anexo.payload)
-                    with open("Teste.xlsx", 'wb') as arquivo_excel:
-                        arquivo_excel.write(anexo.payload)
+
+
+
+def download_gmail():
+    '''Filtra os emails e retorna os dados'''
+
+    lista_emails = acess_mail()
+
+    #lista_emails = meu_email.fetch(AND(from_="remetente"))
+    dict_run = {}
+    for chave, email in enumerate(lista_emails):
+        email_data = trata_mail(email)
+        if bool(email_data) is True:
+            dict_run[chave] = email_data
+    return dict_run
+
+
