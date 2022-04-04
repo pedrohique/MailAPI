@@ -1,4 +1,8 @@
 from funcs import ler_mail
 
 
-ler_mail.download_gmail()
+emails = ler_mail.download_gmail()
+
+for i in emails.keys():
+    df = emails[i]['anexos']
+    print(df)
