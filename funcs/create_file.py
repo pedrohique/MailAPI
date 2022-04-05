@@ -1,7 +1,7 @@
 import pandas as pd
+from funcs import trat_dados
 
 def create_file(emails, index):
-    print(emails)
     df = emails[index]['anexos']
     empresa = emails[index]['from']
     empresa = empresa[1]
@@ -9,11 +9,14 @@ def create_file(emails, index):
     empresa = empresa[1].replace('.com', '').replace('.br', '')
     data = emails[index]['data'].split(' ')
     data = data[1] + data[2] + data[3] + '-' + data[4].replace(':', '')
-    print(empresa, data)
+    #print(emails)
+    tipo = emails[index]['tipo']
+    print(empresa, data, tipo)
     for i in df.values():
-        # print(i)
         df = pd.DataFrame.from_dict(i)
-        # print(df.head())
-        df.to_csv(empresa + '-' + data + '.csv', sep=',')
-        # df = pd.DataFrame.from_dict(df)
-        print(type(df), df.head())
+        if tipo == 'cadastro de funcionario':
+            df = trat_dados.tratar_dados_employee(df, empresa)
+        elif tipo == 'ajuste estoque':
+            df = trat_dados.tratar_dados_estoque(df, empresa)
+        df.to_csv(empresa + '-' + data + tipo.replace(' ', '') +  '.csv', sep=',', index=False)
+        #print(type(df), df.head())
