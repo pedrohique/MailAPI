@@ -15,7 +15,7 @@ def tratar_dados_employee(dados, empresa):
     return dados_true
 
 def tratar_dados_estoque(dados, empresa):
-    cribs = config.get('i9brgroup', 'cribs').replace(' ', '')
+    cribs = config.get(empresa, 'cribs').replace(' ', '')
     cribs = cribs.split(',')
     dados = dados.astype(str)
     #print(cribs, type(cribs[0]))

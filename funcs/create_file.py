@@ -22,5 +22,5 @@ def create_file(emails, index):
             df = trat_dados.tratar_dados_employee(df, empresa)
         elif tipo == 'ajuste estoque':
             df = trat_dados.tratar_dados_estoque(df, empresa)
-        df.to_csv(caminho + empresa + '-' + data + tipo.replace(' ', '') +  '.csv', sep=',', index=False)
+        df.to_csv(caminho + tipo.replace(' ', '') +'-'+ empresa + data + '.csv', sep=',', index=False)
         #print(type(df), df.head())
