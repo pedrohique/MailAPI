@@ -1,4 +1,5 @@
 from imap_tools import MailBox, AND
+from funcs import Send_Mail
 import logging
 import pandas as pd
 
@@ -13,7 +14,7 @@ def acess_mail():
     return lista_emails
 
 def trata_mail(email):
-    list_subject = ['cadastro de funcionários', 'cadastro de funcionario', 'cadastro de item', 'cadastro de itens', 'ajuste estoque']
+    list_subject = ['1', '2']
     email_data = {}
     dict_anexos = {}
     if len(email.attachments) > 0 and email.subject.lower() in list_subject:
@@ -27,7 +28,7 @@ def trata_mail(email):
                 contagem_anex += 1
         email_data['anexos'] = dict_anexos
     else:
-        print('enviar email falando o objetivo do sistema.')
+        Send_Mail.SendMail(emails=email.from_values.email, data=email.date, status='erro001', erros=0, sucesso=0, tipo='erro')
     return email_data
 
 
