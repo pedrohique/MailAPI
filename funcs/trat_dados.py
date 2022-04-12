@@ -6,22 +6,39 @@ config.read('config.ini')
 
 def tratar_dados_employee(dados, empresa):
     #config.read('config.ini')
-    siteid = config.get(empresa, 'siteid')
-    dados = dados.astype(str)
-    filtro_true = dados['Employeesiteid'] == siteid
-    filtro_false = dados['Employeesiteid'] != siteid
-    dados_true = dados[filtro_true]
-    dados_false = dados[filtro_false] #vai ser enviado por email alertando dados incorretos
+    try:
+        siteid = config.get(empresa, 'siteid')
+        dados = dados.astype(str)
+        try:
+            filtro_true = dados['Employeesiteid'] == siteid
+            filtro_false = dados['Employeesiteid'] != siteid
+        except:
+            filtro_true = dados['employeesiteid'] == siteid
+            filtro_false = dados['employeesiteid'] != siteid
+        dados_true = dados[filtro_true]
+        dados_false = dados[filtro_false] #vai ser enviado por email alertando dados incorretos
+    except:
+        dados_true = pd.DataFrame()
+        dados_false = pd.DataFrame()
     return dados_true, dados_false
 
 def tratar_dados_estoque(dados, empresa):
-    cribs = config.get(empresa, 'cribs').replace(' ', '')
-    cribs = cribs.split(',')
-    dados = dados.astype(str)
-    filtro_true = dados['Crib'].isin(cribs)
-    filtro_false = ~dados['Crib'].isin(cribs)
-    dados_true = dados[filtro_true]
-    dados_false = dados[filtro_false]#vai ser enviado via email alertando inconsistencia nos dados
+    try:
+        cribs = config.get(empresa, 'cribs').replace(' ', '')
+        cribs = cribs.split(',')
+        dados = dados.astype(str)
+        try:
+            filtro_true = dados['Crib'].isin(cribs)
+            filtro_false = ~dados['Crib'].isin(cribs)
+        except:
+            filtro_true = dados['crib'].isin(cribs)
+            filtro_false = ~dados['crib'].isin(cribs)
+        dados_true = dados[filtro_true]
+        dados_false = dados[filtro_false]#vai ser enviado via email alertando inconsistencia nos dados
+    except:
+        dados_true = pd.DataFrame()
+        dados_false = pd.DataFrame()
+
     return dados_true, dados_false
 
 def det_acao(df, df_error):

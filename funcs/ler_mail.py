@@ -28,7 +28,7 @@ def trata_mail(email):
                 contagem_anex += 1
         email_data['anexos'] = dict_anexos
     else:
-        Send_Mail.SendMail(emails=email.from_values.email, data=email.date, status='erro001', erros=0, sucesso=0, tipo='erro')
+        Send_Mail.SendMail(emails=email.from_values.email, data=email.date, status='erro001', erros=0, sucesso=0, tipo= email.subject)
     return email_data
 
 
