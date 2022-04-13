@@ -23,7 +23,7 @@ def trata_mail(email):
                 email_data['data'] = email.date_str
                 email_data['from'] = [email.from_values.name, email.from_values.email]
                 email_data['tipo'] = email.subject.lower()
-                df = pd.read_excel(anexo.payload)
+                df = pd.read_excel(anexo.payload, dtype=str)
                 dict_anexos[contagem_anex] = df
                 contagem_anex += 1
         email_data['anexos'] = dict_anexos

@@ -33,8 +33,9 @@ def create_file(emails, index):
 
         name = tipo.replace(' ', '') +'-'+ empresa + data + '.csv' #define o nome do arquivo
         if df.empty == False:
+            df['item'] = df['item'] #esta indo com .0 a direita
             df.to_csv(caminho + name, sep=',', index=False)
-        time.sleep(60)
+        time.sleep(60)#tempo até conferir o arquivo na pasta
         resp = trat_dados.check_arquivo(name, caminho) #valida se o arquivo esta na pasta sucess
 
         if resp == True:

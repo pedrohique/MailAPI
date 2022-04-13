@@ -15,8 +15,10 @@ def tratar_dados_employee(dados, empresa):
         except:
             filtro_true = dados['employeesiteid'] == siteid
             filtro_false = dados['employeesiteid'] != siteid
-        dados_true = dados[filtro_true]
-        dados_false = dados[filtro_false] #vai ser enviado por email alertando dados incorretos
+        dados_true = dados[filtro_true].astype(str)
+        dados_false = dados[filtro_false].astype(str)#vai ser enviado por email alertando dados incorretos
+
+        print(dados_true.head())
     except:
         dados_true = pd.DataFrame()
         dados_false = pd.DataFrame()
@@ -49,7 +51,7 @@ def det_acao(df, df_error):
 
 def check_arquivo(nome_arquivo, caminho):
     #for arquivo in os.listdir(caminho+'Sucess'):
-    if nome_arquivo in os.listdir(caminho+'Sucess'):
+    if nome_arquivo in os.listdir(caminho+'Success'):
         return True
     else:
         return False
