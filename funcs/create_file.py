@@ -31,9 +31,11 @@ def create_file(emails, index):
             df, df_error = trat_dados.tratar_dados_estoque(df, empresa)#valida se os dados estão corretos, se estiver incorretos
             #retorna um df vazio.
 
-        name = tipo.replace(' ', '') +'-'+ empresa + data + '.csv' #define o nome do arquivo
-        if df.empty == False:
+        name = 'mailAPI'+tipo.replace(' ', '') +'-'+ empresa + data + '.csv' #define o nome do arquivo
+        if df.empty == False and tipo == '2':
             df['item'] = df['item'] #esta indo com .0 a direita
+            df.to_csv(caminho + name, sep=',', index=False)
+        else:
             df.to_csv(caminho + name, sep=',', index=False)
         time.sleep(60)#tempo até conferir o arquivo na pasta
         resp = trat_dados.check_arquivo(name, caminho) #valida se o arquivo esta na pasta sucess
