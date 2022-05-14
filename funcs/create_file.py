@@ -6,6 +6,7 @@ import os
 from funcs import Send_Mail
 
 def create_file(emails, index):
+
     config = configparser.ConfigParser()
     config.read('config.ini')
     caminho = config.get('DEFAULT', 'caminho_cm')
@@ -32,6 +33,7 @@ def create_file(emails, index):
             #retorna um df vazio.
 
         name = 'mailAPI'+tipo.replace(' ', '') +'-'+ empresa + data + '.csv' #define o nome do arquivo
+
         if df.empty == False and tipo == '2':
             df['item'] = df['item'] #esta indo com .0 a direita
             df.to_csv(caminho + name, sep=',', index=False)
@@ -45,6 +47,5 @@ def create_file(emails, index):
         elif resp == False:
             Send_Mail.SendMail(emails=email_retorno, data=emails[index]['data'], status='erro002', erros=df_error, sucesso=df, tipo=tipo)
 
-        #print(type(df), df.head())
 
 
