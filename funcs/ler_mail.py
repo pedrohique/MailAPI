@@ -6,6 +6,7 @@ import pandas as pd
 
 
 def acess_mail():
+    logging.info(f'acessando email')
     '''loga na conta e traz todos os emails que não foram visualizados'''
     username = 'backofficei9br@gmail.com'
     password = 'i9br12345'
@@ -14,6 +15,7 @@ def acess_mail():
     return lista_emails
 
 def trata_mail(email):
+    logging.info(f'tratando dados email')
     list_subject = ['1', '2']
     email_data = {}
     dict_anexos = {}
@@ -28,6 +30,7 @@ def trata_mail(email):
                 contagem_anex += 1
         email_data['anexos'] = dict_anexos
     else:
+        logging.info(f'Email invalido, enviando menssagem')
         Send_Mail.SendMail(emails=email.from_values.email, data=email.date, status='erro001', erros=0, sucesso=0, tipo= email.subject)
     return email_data
 
@@ -44,7 +47,9 @@ def download_gmail():
     for chave, email in enumerate(lista_emails):
         email_data = trata_mail(email)
         if bool(email_data) is True:
+            logging.info(f'retornando dados do email')
             dict_run[chave] = email_data
+            logging.info(f'leitura de email completa')
     return dict_run
 
 

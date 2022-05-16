@@ -1,16 +1,20 @@
 import pandas as pd
 import configparser
 import os
+import logging
 
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 
 def tratar_dados_employee(dados, empresa):
+    logging.info(f'Iniciando tratamento de dados de employee')
     #config.read('config.ini')
     try:
+
         siteid = config.get(empresa, 'siteid')
         dados = dados.astype(str)
+        logging.info(f'Conferindo site id')
         try:
             filtro_true = dados['Employeesiteid'] == siteid
             filtro_false = dados['Employeesiteid'] != siteid
@@ -19,9 +23,9 @@ def tratar_dados_employee(dados, empresa):
             filtro_false = dados['employeesiteid'] != siteid
         dados_true = dados[filtro_true].astype(str)
         dados_false = dados[filtro_false].astype(str)#vai ser enviado por email alertando dados incorretos
-
-        print(dados_true.head())
+        logging.info(f'Validação concluida com suceeo')
     except:
+        logging.info(f'Site id invalido, retornando dados zerado')
         dados_true = pd.DataFrame()
         dados_false = pd.DataFrame()
     return dados_true, dados_false
@@ -29,6 +33,7 @@ def tratar_dados_employee(dados, empresa):
 def tratar_dados_estoque(dados, empresa):
     '''Faz o tratamento dos dados do arquivo retornando dois dataframes, dados_true = dados corretos que serão importados
     dados_false = dados incorretos que serão retornados para o usuario.'''
+    logging.info(f'Tratando dados de atualização de estoque')
     def trata_crib(dados, empresa):
         '''Basicamente verifica se o crib indicado esta na lista de cribs permitidos pela empresa'''
         try:
@@ -93,22 +98,22 @@ def tratar_dados_estoque(dados, empresa):
     dados_false = dados_false.sort_index() #organiza o df por index
     dados_false['linha error'] = dados_false.index + 2 #cria uma coluna informando o index da linha no arquivo XLSX
 
-
-
-
-
-
+    logging.info(f'retornando dados corretos e incorretos')
     return dados_true, dados_false
 
 def det_acao(df, df_error):
+
     dados_corretos = len(df.index)
     dados_incorretos = len(df_error.index)
+    logging.info(f'Verificando quantidades de dados - dados corretos:{dados_corretos}, dados incorreto: {dados_incorretos}')
     return dados_incorretos, dados_corretos
 
 
 def check_arquivo(nome_arquivo, caminho): #valida se o arquivo esta na pasta sucess
 
     if nome_arquivo in os.listdir(caminho+'Success'):
+        logging.info(f'Importação realizada com sucesso')
         return True
     else:
+        logging.info(f'Importação falhada')
         return False

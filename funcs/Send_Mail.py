@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from funcs import trat_dados
 from email.mime.base import MIMEBase
 from email import encoders
+import logging
 
 
 class SendMail:
@@ -127,7 +128,8 @@ class SendMail:
 
 
         self.resp = Sender(self.host, self.user, self.password, self.port, self.emails, self.status, self.erros, self.tipo, self.sucesso)
-
+        logging.info(f'{self.resp}')
+        print(self.resp)
 
 
 
