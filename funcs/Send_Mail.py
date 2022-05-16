@@ -129,7 +129,6 @@ class SendMail:
 
         self.resp = Sender(self.host, self.user, self.password, self.port, self.emails, self.status, self.erros, self.tipo, self.sucesso)
         logging.info(f'{self.resp}')
-        print(self.resp)
 
 
 

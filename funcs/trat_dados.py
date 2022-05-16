@@ -112,8 +112,6 @@ def det_acao(df, df_error):
 def check_arquivo(nome_arquivo, caminho): #valida se o arquivo esta na pasta sucess
 
     if nome_arquivo in os.listdir(caminho+'Success'):
-        logging.info(f'Importação realizada com sucesso')
         return True
     else:
-        logging.info(f'Importação falhada')
         return False
