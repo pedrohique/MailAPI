@@ -10,8 +10,11 @@ def acess_mail():
     '''loga na conta e traz todos os emails que não foram visualizados'''
     username = 'backofficei9br@gmail.com'
     password = 'i9br12345'
+    print(username, password)
     meu_email = MailBox('imap.gmail.com').login(username, password)
+    print('hi2')
     lista_emails = meu_email.fetch(AND(seen=False))
+    print('hi3')
     return lista_emails
 
 def trata_mail(email):
